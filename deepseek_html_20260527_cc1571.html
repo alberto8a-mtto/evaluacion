@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Evaluación Mantenimiento | Selección Múltiple y Verdadero/Falso</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #eef3f8;
+            --bg-secondary: #f7fafc;
+            --brand: #0f5f7d;
+            --brand-strong: #0a4660;
+            --text-main: #1c2a3a;
+            --text-muted: #4c6477;
+            --line-soft: #d8e4ee;
+            --line-strong: #c2d5e2;
+            --ok-bg: #dcfce7;
+            --ok-text: #166534;
+            --fail-bg: #fee2e2;
+            --fail-text: #991b1b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 12% 10%, rgba(15, 95, 125, 0.14), transparent 36%),
+                radial-gradient(circle at 90% 6%, rgba(0, 122, 163, 0.1), transparent 30%),
+                linear-gradient(180deg, #f7fafd 0%, var(--bg-main) 100%);
+            font-family: 'Manrope', 'Segoe UI', sans-serif;
+            padding: 2.2rem 1rem;
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1060px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.93);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            box-shadow: 0 26px 50px -22px rgba(12, 34, 52, 0.35);
+            backdrop-filter: blur(6px);
+            overflow: hidden;
+            padding: 2rem 2rem 2.7rem;
+            animation: fade-in-up 0.45s ease;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            margin-bottom: 0.85rem;
+            border-bottom: 1px solid var(--line-strong);
+            flex-wrap: wrap;
+        }
+
+        .brand-mark {
+            width: 180px;
+            height: 92px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #fff 0%, #f4f7fa 100%);
+            border: 1px solid #d8e4ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 14px 24px -22px rgba(8, 52, 74, 0.7);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            padding: 0.2rem;
+        }
+
+        .brand-copy {
+            min-width: 0;
+        }
+
+        .brand-name {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.35rem;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .brand-name strong {
+            font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.8rem);
+            font-weight: 900;
+            color: #111117;
+            letter-spacing: -0.04em;
+        }
+
+        .brand-name span {
+            font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.8rem);
+            font-weight: 900;
+            color: #ff1710;
+            letter-spacing: -0.04em;
+        }
+
+        .brand-suffix {
+            font-size: clamp(1rem, 0.95rem + 0.35vw, 1.35rem);
+            font-weight: 600;
+            color: #6a7883;
+        }
+
+        .brand-caption {
+            margin-top: 0.2rem;
+            font-size: 0.92rem;
+            color: #4d6476;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: clamp(1.15rem, 1rem + 0.9vw, 1.65rem);
+            border-left: 6px solid var(--brand);
+            padding-left: 1rem;
+            margin-bottom: 0.55rem;
+            color: #0c3850;
+            letter-spacing: 0.01em;
+        }
+
+        .subhead {
+            color: var(--text-muted);
+            margin-bottom: 1.6rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--line-strong);
+            padding-bottom: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .info-panel {
+            background: linear-gradient(180deg, #f9fcfe 0%, #f2f7fb 100%);
+            padding: 1.2rem 1.2rem;
+            border-radius: 18px;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem 0.9rem;
+            border: 1px solid var(--line-soft);
+        }
+
+        .module-nav {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .module-btn {
+            background: #f4f9fc;
+            color: var(--brand);
+            border: 1px solid var(--line-strong);
+            border-radius: 999px;
+            padding: 0.55rem 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .module-btn.active {
+            background: linear-gradient(135deg, var(--brand), #12779d);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 10px 20px -10px rgba(15, 95, 125, 0.75);
+        }
+
+        .module-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .module-content {
+            display: none;
+        }
+
+        .module-content.active {
+            display: block;
+            animation: fade-in 0.28s ease;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            background: #ffffff;
+            border: 1px solid #d8e4ee;
+            border-radius: 12px;
+            padding: 0.6rem 0.7rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .info-field:focus-within {
+            border-color: #8ab4cc;
+            box-shadow: 0 0 0 3px rgba(18, 119, 157, 0.12);
+        }
+
+        .info-field label {
+            font-weight: 700;
+            color: #1b526c;
+            font-size: 0.88rem;
+            line-height: 1.2;
+        }
+
+        .info-input {
+            width: 100%;
+        }
+
+        input[type="text"], input[type="date"], input[type="password"] {
+            border: 1px solid #c8d7e2;
+            border-radius: 12px;
+            padding: 0.52rem 0.8rem;
+            font-size: 0.9rem;
+            background: white;
+            transition: 0.2s;
+            color: #193245;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2386ae;
+            box-shadow: 0 0 0 3px rgba(35, 134, 174, 0.2);
+        }
+
+        .section {
+            background: #ffffff;
+            margin-bottom: 2rem;
+            border-radius: 18px;
+            border: 1px solid var(--line-soft);
+            overflow: hidden;
+            box-shadow: 0 16px 24px -22px rgba(9, 44, 68, 0.6);
+        }
+
+        .section-title {
+            background: linear-gradient(90deg, #eff7fc 0%, #f6fbff 100%);
+            padding: 0.9rem 1.4rem;
+            font-size: clamp(1rem, 0.95rem + 0.55vw, 1.35rem);
+            font-weight: 700;
+            color: #104f68;
+            border-bottom: 1px solid #d7e6f0;
+        }
+
+        .question-block {
+            padding: 1rem 1.4rem;
+            border-bottom: 1px solid #eaf1f6;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: #1d3246;
+            line-height: 1.35;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 0.25rem;
+        }
+
+        .radio-group, .truefalse-group {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label, .truefalse-group label {
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            background: #f7fbfe;
+            border: 1px solid #dce7ef;
+            border-radius: 999px;
+            padding: 0.35rem 0.7rem;
+            transition: 0.2s ease;
+        }
+
+        .radio-group label:hover, .truefalse-group label:hover {
+            border-color: #9cc0d3;
+            background: #f0f8fd;
+        }
+
+        input[type="radio"] {
+            accent-color: var(--brand);
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.9rem;
+            margin-top: 1.7rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--brand), #12779d);
+            border: none;
+            padding: 0.72rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.96rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            box-shadow: 0 12px 20px -14px rgba(15, 95, 125, 0.9);
+            font-family: inherit;
+        }
+
+        button.secondary {
+            background: white;
+            color: var(--brand);
+            border: 1px solid #8db4c8;
+            box-shadow: none;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--brand-strong), #0e6383);
+            transform: translateY(-1px);
+        }
+
+        button.secondary:hover {
+            background: #e9f4fa;
+        }
+
+        .results {
+            background: linear-gradient(180deg, #eef8fd 0%, #f9fdff 100%);
+            border-radius: 16px;
+            padding: 1.3rem;
+            margin-top: 1.3rem;
+            border: 1px solid #d6e9f4;
+        }
+
+        .score-badge {
+            font-size: clamp(1.15rem, 1rem + 0.65vw, 1.55rem);
+            font-weight: 800;
+            color: #08344a;
+        }
+
+        .feedback-detail {
+            margin-top: 0.8rem;
+            background: #ffffffd9;
+            border-radius: 14px;
+            padding: 0.95rem;
+            font-size: 0.9rem;
+            border: 1px solid #dceaf3;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-card {
+            background: linear-gradient(180deg, #f5fbff 0%, #eef7fd 100%);
+            border: 1px solid #d6e7f2;
+            border-radius: 14px;
+            padding: 0.8rem 1rem;
+        }
+
+        .metric-title {
+            font-size: 0.82rem;
+            color: #28556c;
+            margin-bottom: 0.2rem;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #083344;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #d3e3ee;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.65rem 0.7rem;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 0.9rem;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fbfdff;
+        }
+
+        th {
+            background: #f2f7fb;
+            color: #1e3a4b;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .status-pill {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .status-ok {
+            background: var(--ok-bg);
+            color: var(--ok-text);
+        }
+
+        .status-fail {
+            background: var(--fail-bg);
+            color: var(--fail-text);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .auth-panel {
+            max-width: 460px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #f9fcff 0%, #f2f8fc 100%);
+            border: 1px solid #d5e5ef;
+            border-radius: 14px;
+            padding: 1.1rem;
+            box-shadow: 0 16px 24px -24px rgba(8, 52, 74, 0.7);
+        }
+
+        .auth-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f4c64;
+            margin-bottom: 0.75rem;
+        }
+
+        .auth-field {
+            margin-bottom: 0.7rem;
+        }
+
+        .auth-field input {
+            width: 100%;
+        }
+
+        .auth-field label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.86rem;
+            color: #1f4f64;
+            font-weight: 700;
+        }
+
+        .auth-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0.95rem;
+        }
+
+        .auth-message {
+            margin-top: 0.5rem;
+            font-size: 0.84rem;
+            color: #b91c1c;
+            min-height: 1.1rem;
+        }
+
+        #reviewerLogin .question-block {
+            padding: 1.1rem 1.4rem 1.3rem;
+        }
+
+        #attemptInfo {
+            background: #f4fbff;
+            border: 1px solid #d5e8f4;
+            border-radius: 12px;
+            padding: 0.55rem 0.8rem;
+            margin-top: 0.75rem;
+        }
+
+        hr {
+            margin: 0.5rem 0;
+            border: 0;
+            border-top: 1px solid #d9e7f0;
+        }
+
+        .expected-answer {
+            background: #fef9e3;
+            padding: 0.5rem 1rem;
+            border-radius: 14px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #5e3a00;
+        }
+
+        @media (max-width: 720px) {
+            .container {
+                padding: 1.15rem;
+            }
+            .brand-header {
+                gap: 0.8rem;
+            }
+            .brand-mark {
+                width: 140px;
+                height: 72px;
+                border-radius: 14px;
+            }
+            .question-block {
+                padding: 1rem;
+            }
+            .info-panel {
+                grid-template-columns: 1fr;
+                padding: 0.9rem;
+            }
+            .module-nav {
+                width: 100%;
+            }
+            .module-btn {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+            .btn-group {
+                justify-content: stretch;
+            }
+            .btn-group button {
+                width: 100%;
+            }
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="brand-header">
+        <div class="brand-mark" aria-hidden="true">
+            <img src="logo.webp" alt="Logo de Alberto Ochoa & Cia. S.A.S">
+        </div>
+        <div class="brand-copy">
+            <div class="brand-name"><strong>Alberto</strong><span>Ochoa</span></div>
+            <div class="brand-suffix">&amp; Cia. S.A.S</div>
+            <div class="brand-caption">Sistema de evaluación de inducción – área de mantenimiento</div>
+        </div>
+    </div>
+    <h1>📋 EVALUACIÓN DE INDUCCIÓN – ÁREA DE MANTENIMIENTO</h1>
+    <div class="subhead">
+        <span>Selección múltiple + Verdadero/Falso</span>
+        <span>Puntaje total: 40 puntos (Aprobatorio: 28 pts)</span>
+    </div>
+
+    <div class="module-nav">
+        <button id="openEvalModule" class="module-btn active" type="button">Módulo de evaluación</button>
+        <button id="openReviewerModule" class="module-btn" type="button">Módulo del evaluador</button>
+    </div>
+
+    <div id="evalModule" class="module-content active">
+        <div class="info-panel">
+            <div class="info-field"><label>👤 Nombres</label><input class="info-input" type="text" id="nombresAprendiz" placeholder="Escriba los nombres" required></div>
+            <div class="info-field"><label>👤 Apellidos</label><input class="info-input" type="text" id="apellidosAprendiz" placeholder="Escriba los apellidos" required></div>
+            <div class="info-field"><label>🪪 Documento</label><input class="info-input" type="text" id="documentoAprendiz" placeholder="Número de documento" required></div>
+            <div class="info-field"><label>🏫 Institución de formación</label><input class="info-input" type="text" id="institucionFormacion" placeholder="Nombre de la institución" required></div>
+            <div class="info-field"><label>🎓 Título a obtener</label><input class="info-input" type="text" id="tituloObtener" placeholder="Programa o título" required></div>
+            <div class="info-field"><label>📅 Fecha</label><input class="info-input" type="date" id="fechaEvaluacion" value="2026-05-27"></div>
+        </div>
+
+        <!-- SECCIÓN I: SELECCIÓN MÚLTIPLE (20 pts) -->
+        <div class="section">
+            <div class="section-title">I. Selección múltiple (20 pts - 2 c/u)</div>
+            <div id="mcq-container"></div>
+        </div>
+
+        <!-- SECCIÓN II: VERDADERO O FALSO (20 pts) -->
+        <div class="section">
+            <div class="section-title">II. Verdadero o Falso (20 pts - 2 c/u)</div>
+            <div id="tf-container"></div>
+        </div>
+
+        <div class="btn-group">
+            <button id="gradeBtn">📨 Enviar evaluación</button>
+        </div>
+        <div id="attemptInfo" style="margin-top:0.7rem; color:#2c5a6e; font-size:0.88rem;"></div>
+        <div id="resultsArea" class="results" style="display: none;"></div>
+    </div>
+
+    <div id="reviewerModule" class="module-content">
+        <div id="reviewerLogin" class="section">
+            <div class="section-title">Acceso módulo del evaluador</div>
+            <div class="question-block">
+                <div class="auth-panel">
+                    <div class="auth-title">Ingrese usuario y clave para consultar resultados</div>
+                    <div class="auth-field">
+                        <label for="reviewerUser">Usuario</label>
+                        <input class="info-input" type="text" id="reviewerUser" placeholder="Usuario evaluador">
+                    </div>
+                    <div class="auth-field">
+                        <label for="reviewerPass">Clave</label>
+                        <input class="info-input" type="password" id="reviewerPass" placeholder="Clave de acceso">
+                    </div>
+                    <div class="auth-actions">
+                        <button id="reviewerLoginBtn" type="button">Ingresar</button>
+                    </div>
+                    <div id="reviewerAuthMessage" class="auth-message"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="reviewerContent" class="section" style="display:none;">
+            <div class="section-title">Resultados de evaluaciones registradas</div>
+            <div class="question-block">
+                <div class="dashboard-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Total evaluaciones</div>
+                        <div class="metric-value" id="totalEvaluaciones">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Aprobados</div>
+                        <div class="metric-value" id="totalAprobados">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">No aprobados</div>
+                        <div class="metric-value" id="totalNoAprobados">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Promedio general</div>
+                        <div class="metric-value" id="promedioGeneral">0.0</div>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <input type="text" id="searchNombre" placeholder="Buscar por nombre" style="min-width: 240px;">
+                    <button id="clearStorageBtn" class="secondary" type="button">Borrar historial</button>
+                    <button id="reviewerLogoutBtn" class="secondary" type="button">Cerrar sesión</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha de registro</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Documento</th>
+                                <th>Institución</th>
+                                <th>Título a obtener</th>
+                                <th>Fecha evaluación</th>
+                                <th>Puntaje</th>
+                                <th>MCQ</th>
+                                <th>V/F</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                            <tr>
+                                <td colspan="11">No hay evaluaciones registradas.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'evaluacionMantenimientoResultados';
+    const REVIEWER_SESSION_KEY = 'evaluacionMantenimientoReviewerAuth';
+    const REVIEWER_USER = 'evaluador';
+    const REVIEWER_PASS = 'Evaluador2026';
+
+    // ======================== DATOS PREGUNTAS ========================
+    // --- MÚLTIPLE CHOICE (10 preguntas) según clave oficial ---
+    const mcqData = [
+        { text: "1. Según la Resolución 315 de 2013 y su aclaración (Resolución 378 de 2013), ¿cada cuánto debe realizarse como mínimo el mantenimiento preventivo de los vehículos de transporte público?", options: ["a) Cada mes", "b) Cada dos (2) meses", "c) Cada seis meses", "d) Anualmente"], correct: "b" },
+        { text: "2. ¿Quién es el responsable directo de realizar el mantenimiento preventivo de los vehículos vinculados a una empresa de transporte?", options: ["a) El propietario del vehículo", "b) El conductor", "c) La empresa de transporte", "d) El centro de diagnóstico automotor (CDA)"], correct: "c" },
+        { text: "3. ¿Qué documento debe portar el vehículo que acredita la revisión técnico-mecánica anual?", options: ["a) Certificado de mantenimiento preventivo bimestral", "b) Tarjeta de operación", "c) Revisión técnico-mecánica y de emisiones contaminantes (estatal)", "d) Certificado de capacitación en mercancías peligrosas"], correct: "c" },
+        { text: "4. Según el artículo 31 del Decreto 172 de 2001, ¿puede la empresa desvincular administrativamente a un propietario que se niegue a realizar el mantenimiento preventivo?", options: ["a) Sí, es una causal de desvinculación", "b) No, solo por incumplimiento del SOAT", "c) Solo si el contrato está vencido", "d) No, la empresa no tiene esa facultad"], correct: "a" },
+        { text: "5. En el instructivo de revisión pre-viaje (GM-03-D02), ¿quién debe realizar la revisión?", options: ["a) Solo el conductor", "b) Una persona diferente al conductor, pero en su presencia", "c) El propietario del vehículo", "d) Cualquier funcionario de la empresa sin necesidad del conductor"], correct: "b" },
+        { text: "6. ¿Cuál de los siguientes NO es un criterio de seguridad activa según el documento GM-01-D01?", options: ["a) Cinturones de seguridad", "b) Sistema de frenos", "c) Sistema de dirección", "d) Luces y sistema de limpiaparabrisas"], correct: "a" },
+        { text: "7. De acuerdo con la Resolución 572 de 2013, ¿qué texto debe llevar el adhesivo “Cómo Conduzco”?", options: ["a) “Línea de atención al usuario”", "b) “¿CÓMO CONDUZCO?”, “MARQUE GRATIS”, “Opción 3” y el logo #767", "c) “Reporte su queja aquí”", "d) “Ministerio de Transporte – Línea 123”"], correct: "b" },
+        { text: "8. ¿Qué elemento NO hace parte del kit de emergencia para transporte de mercancías peligrosas según el instructivo GM-02-I01?", options: ["a) Mascarilla con cartucho químico", "b) Traje de protección química", "c) Un extintor de 5 libras", "d) Pala de polipropileno y material absorbente"], correct: "c" },
+        { text: "9. En la revisión de llantas direccionales (delanteras) para vehículos pesados, la profundidad mínima del labrado debe ser:", options: ["a) 1 mm", "b) 2 mm", "c) 3 mm", "d) 4 mm"], correct: "c" },
+        { text: "10. Según la Circular 09 de 2013 de la Superintendencia de Puertos y Transporte, ¿los vehículos taxi deben portar el adhesivo “Cómo Conduzco”?", options: ["a) Sí, siempre", "b) No, están excluidos", "c) Solo si prestan servicio intermunicipal", "d) Solo si tienen capacidad de más de 5 pasajeros"], correct: "b" }
+    ];
+
+    // --- VERDADERO/FALSO (10 enunciados) clave: true = V, false = F ---
+    const tfData = [
+        { text: "1. El mantenimiento preventivo puede entenderse como las actividades de revisión o inspección del vehículo.", correct: false },
+        { text: "2. La empresa transportadora puede percibir beneficios económicos por la selección del centro especializado de mantenimiento si lo justifica en costos administrativos.", correct: false },
+        { text: "3. La revisión pre-viaje debe realizarse en el sitio de origen entre el último despacho del día y el primero del día siguiente.", correct: true },
+        { text: "4. Los extintores de los vehículos de carga deben ser de 20 libras y se requieren dos unidades.", correct: true },
+        { text: "5. Los vehículos de servicio público de pasajeros por carretera deben portar el adhesivo “Cómo Conduzco” solo en el interior.", correct: false },
+        { text: "6. El conductor no necesita estar presente durante la revisión técnica pre-viaje si el vehículo es nuevo.", correct: false },
+        { text: "7. El botiquín de primeros auxilios debe incluir cuello ortopédico en los buses.", correct: true },
+        { text: "8. La primera revisión técnico-mecánica para vehículos de servicio público se realiza a los 6 años de su matrícula.", correct: false },
+        { text: "9. En la prueba de frenos (acumulación de presión), el tiempo permitido para pasar de 50 a 90 PSI es máximo 5 minutos.", correct: true },
+        { text: "10. El número de eslingas para un camión de 20 toneladas es de 6 eslingas como mínimo.", correct: false }
+    ];
+
+    // --------------------- RENDER DINÁMICO -------------------------
+    function renderMCQ() {
+        const container = document.getElementById('mcq-container');
+        container.innerHTML = '';
+        mcqData.forEach((q, idx) => {
+            const div = document.createElement('div');
+            div.className = 'question-block';
+            div.innerHTML = `<div class="question-text">${q.text}</div><div class="options radio-group" id="mcq-${idx}"></div>`;
+            const optsDiv = div.querySelector(`.radio-group`);
+            q.options.forEach(opt => {
+                const letter = opt.charAt(0);
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="radio" name="mcq${idx}" value="${letter}"> ${opt}`;
+                optsDiv.appendChild(label);
+            });
+            container.appendChild(div);
+        });
+    }
+
+    function renderTF() {
+        const container = document.getElementById('tf-container');
+        container.innerHTML = '';
+        tfData.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'question-block';
+            div.innerHTML = `<div class="question-text">${item.text}</div>
+                             <div class="truefalse-group">
+                                 <label><input type="radio" name="tf${idx}" value="true"> Verdadero</label>
+                                 <label><input type="radio" name="tf${idx}" value="false"> Falso</label>
+                             </div>`;
+            container.appendChild(div);
+        });
+    }
+
+    // Limpiar todas las respuestas
+    function resetAnswers() {
+        for (let i = 0; i < mcqData.length; i++) {
+            const radios = document.querySelectorAll(`input[name="mcq${i}"]`);
+            radios.forEach(r => r.checked = false);
+        }
+        for (let i = 0; i < tfData.length; i++) {
+            const radios = document.querySelectorAll(`input[name="tf${i}"]`);
+            radios.forEach(r => r.checked = false);
+        }
+        document.getElementById('nombresAprendiz').value = '';
+        document.getElementById('apellidosAprendiz').value = '';
+        document.getElementById('documentoAprendiz').value = '';
+        document.getElementById('institucionFormacion').value = '';
+        document.getElementById('tituloObtener').value = '';
+        document.getElementById('fechaEvaluacion').value = new Date().toISOString().split('T')[0];
+        const resultsDiv = document.getElementById('resultsArea');
+        resultsDiv.style.display = 'none';
+        resultsDiv.innerHTML = '';
+    }
+
+    function getLearnerData() {
+        return {
+            nombres: document.getElementById('nombresAprendiz').value.trim(),
+            apellidos: document.getElementById('apellidosAprendiz').value.trim(),
+            documento: document.getElementById('documentoAprendiz').value.trim(),
+            institucion: document.getElementById('institucionFormacion').value.trim(),
+            titulo: document.getElementById('tituloObtener').value.trim(),
+            fecha: document.getElementById('fechaEvaluacion').value
+        };
+    }
+
+    function validateLearnerData(learnerData) {
+        if (!learnerData.nombres) {
+            return 'Debe ingresar los nombres.';
+        }
+        if (!learnerData.apellidos) {
+            return 'Debe ingresar los apellidos.';
+        }
+        if (!learnerData.documento) {
+            return 'Debe ingresar el documento.';
+        }
+        if (!learnerData.institucion) {
+            return 'Debe ingresar la institución de formación.';
+        }
+        if (!learnerData.titulo) {
+            return 'Debe ingresar el título a obtener.';
+        }
+        return '';
+    }
+
+    function getAttemptsByDocument(documento) {
+        if (!documento) {
+            return 0;
+        }
+        return getStoredResults().filter(item => item.documento === documento).length;
+    }
+
+    function updateAttemptInfo() {
+        const learnerData = getLearnerData();
+        const info = document.getElementById('attemptInfo');
+        if (!learnerData.documento) {
+            info.textContent = 'Intentos permitidos: 2 por documento.';
+            return;
+        }
+        const attempts = getAttemptsByDocument(learnerData.documento);
+        const remaining = Math.max(0, 2 - attempts);
+        info.textContent = `Intentos usados para documento ${learnerData.documento}: ${attempts}/2. Intentos disponibles: ${remaining}.`;
+    }
+
+    function getStoredResults() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function saveResult(result) {
+        const data = getStoredResults();
+        data.push(result);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function formatDateTime(isoValue) {
+        const date = new Date(isoValue);
+        if (Number.isNaN(date.getTime())) {
+            return 'N/D';
+        }
+        return date.toLocaleString('es-CO', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function renderResultsTable() {
+        const tbody = document.getElementById('resultsTableBody');
+        const searchValue = document.getElementById('searchNombre').value.trim().toLowerCase();
+        const data = getStoredResults().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const filtered = searchValue
+            ? data.filter(item => {
+                const fullName = `${item.nombres || ''} ${item.apellidos || ''}`.toLowerCase();
+                return fullName.includes(searchValue);
+            })
+            : data;
+
+        if (!filtered.length) {
+            tbody.innerHTML = '<tr><td colspan="11">No hay evaluaciones para el criterio de búsqueda.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(item => {
+            const scoreText = `${item.totalScore}/40`;
+            const statusClass = item.passed ? 'status-ok' : 'status-fail';
+            const statusText = item.passed ? 'APROBADO' : 'NO APROBADO';
+            return `
+                <tr>
+                    <td>${formatDateTime(item.createdAt)}</td>
+                    <td>${item.nombres || 'N/D'}</td>
+                    <td>${item.apellidos || 'N/D'}</td>
+                    <td>${item.documento || 'N/D'}</td>
+                    <td>${item.institucion || 'N/D'}</td>
+                    <td>${item.titulo || 'N/D'}</td>
+                    <td>${item.fecha || 'N/D'}</td>
+                    <td>${scoreText}</td>
+                    <td>${item.pointsMCQ}/20</td>
+                    <td>${item.pointsTF}/20</td>
+                    <td><span class="status-pill ${statusClass}">${statusText}</span></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderMetrics() {
+        const data = getStoredResults();
+        const total = data.length;
+        const aprobados = data.filter(item => item.passed).length;
+        const noAprobados = total - aprobados;
+        const promedio = total ? (data.reduce((acc, item) => acc + item.totalScore, 0) / total).toFixed(1) : '0.0';
+
+        document.getElementById('totalEvaluaciones').textContent = String(total);
+        document.getElementById('totalAprobados').textContent = String(aprobados);
+        document.getElementById('totalNoAprobados').textContent = String(noAprobados);
+        document.getElementById('promedioGeneral').textContent = promedio;
+    }
+
+    function refreshReviewerModule() {
+        renderMetrics();
+        renderResultsTable();
+    }
+
+    function isReviewerAuthenticated() {
+        return sessionStorage.getItem(REVIEWER_SESSION_KEY) === 'ok';
+    }
+
+    function updateReviewerAccessView() {
+        const loginSection = document.getElementById('reviewerLogin');
+        const contentSection = document.getElementById('reviewerContent');
+
+        if (isReviewerAuthenticated()) {
+            loginSection.style.display = 'none';
+            contentSection.style.display = 'block';
+            refreshReviewerModule();
+            return;
+        }
+
+        loginSection.style.display = 'block';
+        contentSection.style.display = 'none';
+    }
+
+    function handleReviewerLogin() {
+        const user = document.getElementById('reviewerUser').value.trim();
+        const pass = document.getElementById('reviewerPass').value;
+        const message = document.getElementById('reviewerAuthMessage');
+
+        if (user === REVIEWER_USER && pass === REVIEWER_PASS) {
+            sessionStorage.setItem(REVIEWER_SESSION_KEY, 'ok');
+            message.textContent = '';
+            document.getElementById('reviewerPass').value = '';
+            updateReviewerAccessView();
+            return;
+        }
+
+        message.textContent = 'Usuario o clave incorrectos.';
+    }
+
+    function handleReviewerLogout() {
+        sessionStorage.removeItem(REVIEWER_SESSION_KEY);
+        document.getElementById('reviewerUser').value = '';
+        document.getElementById('reviewerPass').value = '';
+        document.getElementById('reviewerAuthMessage').textContent = '';
+        updateReviewerAccessView();
+    }
+
+    function setActiveModule(module) {
+        const evalModule = document.getElementById('evalModule');
+        const reviewerModule = document.getElementById('reviewerModule');
+        const evalBtn = document.getElementById('openEvalModule');
+        const reviewerBtn = document.getElementById('openReviewerModule');
+
+        if (module === 'reviewer') {
+            reviewerModule.classList.add('active');
+            evalModule.classList.remove('active');
+            reviewerBtn.classList.add('active');
+            evalBtn.classList.remove('active');
+            updateReviewerAccessView();
+            return;
+        }
+
+        evalModule.classList.add('active');
+        reviewerModule.classList.remove('active');
+        evalBtn.classList.add('active');
+        reviewerBtn.classList.remove('active');
+    }
+
+    // Calcular y mostrar resultados
+    function evaluate() {
+        const learnerData = getLearnerData();
+        const validationMessage = validateLearnerData(learnerData);
+        if (validationMessage) {
+            window.alert(validationMessage);
+            return;
+        }
+
+        const attempts = getAttemptsByDocument(learnerData.documento);
+        if (attempts >= 2) {
+            window.alert('Este documento ya completó los 2 intentos permitidos para la evaluación.');
+            updateAttemptInfo();
+            return;
+        }
+        const attemptNumber = attempts + 1;
+
+        let pointsMCQ = 0;
+        let pointsTF = 0;
+
+        // Corregir múltiple opción
+        for (let i = 0; i < mcqData.length; i++) {
+            const selected = document.querySelector(`input[name="mcq${i}"]:checked`);
+            if (selected && selected.value === mcqData[i].correct) {
+                pointsMCQ += 2;
+            }
+        }
+
+        // Corregir verdadero/falso
+        for (let i = 0; i < tfData.length; i++) {
+            const selected = document.querySelector(`input[name="tf${i}"]:checked`);
+            if (selected) {
+                const isTrue = selected.value === 'true';
+                if (isTrue === tfData[i].correct) {
+                    pointsTF += 2;
+                }
+            }
+        }
+
+        const totalScore = pointsMCQ + pointsTF; // Máximo 40
+        const passed = totalScore >= 28;
+        const statusText = passed ? "✅ APROBADO" : "❌ NO APROBADO";
+
+        // Construir detalle de respuestas correctas para retroalimentación
+        let feedbackMcq = "<div><strong>📌 Respuestas correctas - Selección múltiple:</strong><br>";
+        mcqData.forEach((q, idx) => {
+            const letterCorrect = q.correct.toUpperCase();
+            const correctText = q.options.find(opt => opt.startsWith(letterCorrect)) || letterCorrect;
+            feedbackMcq += `${idx+1}. ${correctText}<br>`;
+        });
+        feedbackMcq += "</div><br><div><strong>📌 Respuestas correctas - Verdadero/Falso:</strong><br>";
+        tfData.forEach((item, idx) => {
+            const correctAnswer = item.correct ? "Verdadero" : "Falso";
+            feedbackMcq += `${idx+1}. ${correctAnswer}<br>`;
+        });
+        feedbackMcq += "</div>";
+
+        const nombreCompleto = `${learnerData.nombres} ${learnerData.apellidos}`.trim();
+
+        saveResult({
+            nombres: learnerData.nombres,
+            apellidos: learnerData.apellidos,
+            documento: learnerData.documento,
+            institucion: learnerData.institucion,
+            titulo: learnerData.titulo,
+            fecha: learnerData.fecha,
+            attemptNumber,
+            pointsMCQ,
+            pointsTF,
+            totalScore,
+            passed,
+            createdAt: new Date().toISOString()
+        });
+
+        const resultHtml = `
+            <div class="score-badge">🎯 ${nombreCompleto} | Puntaje: ${totalScore} / 40 puntos</div>
+            <div style="font-size:1.1rem; margin: 0.5rem 0;">${statusText} (mínimo 28 pts)</div>
+            <div style="font-size:0.9rem; color:#1f4f64; margin-bottom: 0.4rem;">Intento ${attemptNumber} de 2 permitidos.</div>
+            <div style="font-size:0.9rem; color:#1f4f64; margin-bottom: 0.4rem;">Documento: ${learnerData.documento} | Institución: ${learnerData.institucion} | Título: ${learnerData.titulo}</div>
+            <div>✅ Selección múltiple: ${pointsMCQ}/20 &nbsp;| ✅ Verdadero/Falso: ${pointsTF}/20</div>
+            <div style="margin-top:6px; color:#2c5a6e; font-size:0.86rem;">Registro guardado en el módulo del evaluador.</div>
+            <hr>
+            <div class="feedback-detail">
+                ${feedbackMcq}
+                <div style="margin-top:12px; font-size:0.85rem; color:#2c5a6e;">📘 Basado en Resolución 315/2013, Decreto 172, instructivos GM y normativa vigente.</div>
+            </div>
+        `;
+        const resultsDiv = document.getElementById('resultsArea');
+        resultsDiv.innerHTML = resultHtml;
+        resultsDiv.style.display = 'block';
+        updateAttemptInfo();
+        window.scrollTo({ top: resultsDiv.offsetTop - 20, behavior: 'smooth' });
+    }
+
+    // Eventos
+    document.getElementById('gradeBtn').addEventListener('click', evaluate);
+    document.getElementById('openEvalModule').addEventListener('click', () => setActiveModule('evaluation'));
+    document.getElementById('openReviewerModule').addEventListener('click', () => setActiveModule('reviewer'));
+    document.getElementById('reviewerLoginBtn').addEventListener('click', handleReviewerLogin);
+    document.getElementById('reviewerLogoutBtn').addEventListener('click', handleReviewerLogout);
+    document.getElementById('searchNombre').addEventListener('input', renderResultsTable);
+    document.getElementById('documentoAprendiz').addEventListener('input', updateAttemptInfo);
+    document.getElementById('reviewerPass').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            handleReviewerLogin();
+        }
+    });
+    document.getElementById('clearStorageBtn').addEventListener('click', () => {
+        const confirmed = window.confirm('Se eliminarán todos los resultados guardados. ¿Desea continuar?');
+        if (!confirmed) {
+            return;
+        }
+        localStorage.removeItem(STORAGE_KEY);
+        refreshReviewerModule();
+        updateAttemptInfo();
+    });
+
+    // Inicializar render
+    renderMCQ();
+    renderTF();
+    updateReviewerAccessView();
+    updateAttemptInfo();
+    setActiveModule('evaluation');
+    // set fecha por defecto
+    const fechaInput = document.getElementById('fechaEvaluacion');
+    if (!fechaInput.value) {
+        fechaInput.value = new Date().toISOString().split('T')[0];
+    }
+</script>
+</body>
+</html>
